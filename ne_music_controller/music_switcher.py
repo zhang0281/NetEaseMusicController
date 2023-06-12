@@ -1,4 +1,8 @@
 # coding: utf-8
+
+# https://pywinauto.readthedocs.io/en/latest/code/pywinauto.keyboard.html?highlight=pywinauto.keyboard.html#module-pywinauto.keyboard
+# https://pywinauto.readthedocs.io/en/latest/HowTo.html#how-to-specify-a-usable-application-instance
+
 import os
 
 import psutil
