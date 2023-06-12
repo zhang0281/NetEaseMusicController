@@ -6,35 +6,60 @@
     <title>网易云音乐切换</title>
     <link rel="stylesheet" href="/static/bootstrap.min.css">
     <style>
-        .title{
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .title {
             text-align: center;
         }
-        .btn-list > a{
+
+        .btn-list {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            align-content:center;
+            flex-wrap: wrap;
+        }
+
+        .btn-list > a {
             min-height: 5em;
             line-height: 5em;
+            flex: 30%;
+            margin: 0.5%;
         }
 
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="col-md-12">
-        <div class="col-md-12 title">
+    <div>
+        <div class="title">
             <h3>买不起遥控器只能写程序</h3>
         </div>
-        <div class="col-md-12 btn-list">
-            <a class="btn btn-lg btn-primary col-md-4" role="button" href="?action=prev_song">前一首</a>
-            <a class="btn btn-lg btn-primary col-md-4" role="button" href="?action=pause_play">暂停/播放</a>
-            <a class="btn btn-lg btn-primary col-md-4" role="button" href="?action=next_song">下一首</a>
-        </div>
-        <div class="col-md-12 btn-list">
-            <a class="btn btn-lg btn-primary col-md-4" role="button" href="?action=volume_down">音量-</a>
-            <!-- <a class="btn btn-lg btn-danger col-md-4" role="button" href="?action=shutdown">关机</a> -->
-            <a class="btn btn-lg btn-danger col-md-4" role="button" href="?action=like_song">喜欢</a>
-            <a class="btn btn-lg btn-primary col-md-4" role="button" href="?action=volume_up">音量+</a>
-        </div>
-        <div class="col-md-12">
-
+        <div class="btn-list">
+            <script>
+                function sendRequest(url){
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('GET', url, true);
+                    xhr.send();
+                }
+            </script>
+            <a class="btn btn-lg btn-primary" role="button" href="javascript:sendRequest('?action=prev_song')">前一首</a>
+            <a class="btn btn-lg btn-primary" role="button" href="javascript:sendRequest('?action=pause_play')">暂停/播放</a>
+            <a class="btn btn-lg btn-primary" role="button" href="javascript:sendRequest('?action=next_song')">下一首</a>
+            <a class="btn btn-lg btn-primary" role="button" href="javascript:sendRequest('?action=volume_down')">音量-</a>
+            <!-- <a class="btn btn-lg btn-danger" role="button" href="javascript:sendRequest('?action=shutdown')">关机</a> -->
+            <a class="btn btn-lg btn-primary" role="button" href="javascript:sendRequest('?action=like_song')">喜欢</a>
+            <a class="btn btn-lg btn-primary" role="button" href="javascript:sendRequest('?action=volume_up')">音量+</a>
         </div>
     </div>
 </div>
