@@ -4,6 +4,7 @@
 # https://pywinauto.readthedocs.io/en/latest/HowTo.html#how-to-specify-a-usable-application-instance
 
 import os
+import time
 
 import psutil
 from flask import Flask, request, jsonify
@@ -11,7 +12,7 @@ from pywinauto import Application
 
 pause_play = "^P"
 prev_song = "^{LEFT}"
-next_song = "^{Right}"
+next_song = "^{RIGHT}"
 volume_up = "^{UP}"
 volume_down = "^{DOWN}"
 like_song = "^L"
@@ -32,13 +33,16 @@ class MusicBox(object):
 
     @classmethod
     def _press_keys(cls, keys):
-        if cls.check_if_running(process_name='cloudmusic.exe'):
+        if not cls.check_if_running(process_name='cloudmusic.exe'):
             # 自动从路径打开网易云音乐
             Application(backend="uia").start(r"C:\Program Files (x86)\NetEase\CloudMusic\cloudmusic.exe")
+            time.sleep(5)
         # 连接打开网易云音乐的窗口
         app_connect = Application(backend='uia').connect(class_name="OrpheusBrowserHost")
         # 获取顶层窗口
         top_window = app_connect.top_window()
+
+        top_window.wait('ready')
         # 输入指定按键
         top_window.type_keys(keys)
 
