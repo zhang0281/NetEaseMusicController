@@ -67,20 +67,26 @@
                     console.log(data)
                     document.getElementById('artist').innerText = data.artist
                     document.getElementById('title').innerText = data.title
+                    document.getElementById('pic').src = document.getElementById('pic').src +'&_='+ Math.random();
                 })
             }
             updateData()
+            function reload(){
+                setTimeout(()=>{
+                    location.reload()
+                },1500)
+            }
         </script>
-        <img src="?action=get_pic" alt="" class="img-fluid"/>
+        <img id="pic" src="?action=get_pic" alt="" class="img-fluid"/>
         <div></div>
         <div class="btn-list">
 
             <a class="btn btn-lg btn-primary" role="button"
-               href="javascript:sendRequest('?action=prev_song')">前一首</a>
+               href="javascript:sendRequest('?action=prev_song');reload()">前一首</a>
             <a class="btn btn-lg btn-primary" role="button"
                href="javascript:sendRequest('?action=pause_play')">暂停/播放</a>
             <a class="btn btn-lg btn-primary" role="button"
-               href="javascript:sendRequest('?action=next_song')">下一首</a>
+               href="javascript:sendRequest('?action=next_song');reload()">下一首</a>
             <label for="customRange" class="form-label">音量</label>
             <input type="range" class="form-range" id="customRange" min="0" max="1" step="0.001" value="1"
                    onchange="sendRequest('?action=vol_slider&arg='+document.getElementById('customRange').value)">
