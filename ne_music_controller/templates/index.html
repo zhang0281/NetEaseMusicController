@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>网易云音乐切换</title>
     <link rel="stylesheet" href="/static/bootstrap.min.css">
+    <script src="/static/bootstrap.bundle.min.js"></script>
     <style>
 
         ::-webkit-scrollbar {
@@ -26,40 +27,68 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            align-content:center;
+            align-content: center;
             flex-wrap: wrap;
         }
 
         .btn-list > a {
             min-height: 5em;
             line-height: 5em;
-            flex: 30%;
+            flex: 32%;
             margin: 0.5%;
         }
-
+        .img-fluid {
+            max-width: 100%;
+            width: 300px;
+            height: auto;
+        }
     </style>
 </head>
 <body>
 <div class="container">
+    <script>
+        async function sendRequest(url,callback) {
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.send();
+            xhr.onloadend = callback
+        }
+    </script>
     <div>
         <div class="title">
             <h3>买不起遥控器只能写程序</h3>
         </div>
+        <div id="title"></div>
+        <div id="artist"></div>
+        <script>
+            function updateData(){
+                sendRequest('?action=get_info',result=>{
+                    let data = JSON.parse(result.currentTarget.response.replaceAll("'",'"'))
+                    console.log(data)
+                    document.getElementById('artist').innerText = data.artist
+                    document.getElementById('title').innerText = data.title
+                })
+            }
+            updateData()
+        </script>
+        <img src="?action=get_pic" alt="" class="img-fluid"/>
+        <div></div>
         <div class="btn-list">
+
+            <a class="btn btn-lg btn-primary" role="button"
+               href="javascript:sendRequest('?action=prev_song')">前一首</a>
+            <a class="btn btn-lg btn-primary" role="button"
+               href="javascript:sendRequest('?action=pause_play')">暂停/播放</a>
+            <a class="btn btn-lg btn-primary" role="button"
+               href="javascript:sendRequest('?action=next_song')">下一首</a>
+            <label for="customRange" class="form-label">音量</label>
+            <input type="range" class="form-range" id="customRange" min="0" max="1" step="0.001" value="1"
+                   onchange="sendRequest('?action=vol_slider&arg='+document.getElementById('customRange').value)">
             <script>
-                function sendRequest(url){
-                    let xhr = new XMLHttpRequest();
-                    xhr.open('GET', url, true);
-                    xhr.send();
-                }
+                sendRequest('?action=get_vol',result=>{
+                    document.getElementById('customRange').value = result.currentTarget.response
+                })
             </script>
-            <a class="btn btn-lg btn-primary" role="button" href="javascript:sendRequest('?action=prev_song')">前一首</a>
-            <a class="btn btn-lg btn-primary" role="button" href="javascript:sendRequest('?action=pause_play')">暂停/播放</a>
-            <a class="btn btn-lg btn-primary" role="button" href="javascript:sendRequest('?action=next_song')">下一首</a>
-            <a class="btn btn-lg btn-primary" role="button" href="javascript:sendRequest('?action=volume_down')">音量-</a>
-            <!-- <a class="btn btn-lg btn-danger" role="button" href="javascript:sendRequest('?action=shutdown')">关机</a> -->
-            <a class="btn btn-lg btn-primary" role="button" href="javascript:sendRequest('?action=like_song')">喜欢</a>
-            <a class="btn btn-lg btn-primary" role="button" href="javascript:sendRequest('?action=volume_up')">音量+</a>
         </div>
     </div>
 </div>
