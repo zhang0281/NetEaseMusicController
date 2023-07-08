@@ -18,7 +18,6 @@ import PIL.Image
 
 app = Flask(__name__)
 project_root = os.path.abspath(".")
-template = open(os.path.join(project_root, "templates/index.html"), "r", encoding="utf-8").read()
 
 
 class MusicBox(object):
@@ -172,6 +171,7 @@ def hello_world():
             return str(result)
         return result
     else:
+        template = open(os.path.join(project_root, "templates/index.html"), "r", encoding="utf-8").read()
         return template
 
 
@@ -184,7 +184,9 @@ def mobile_connect():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=10010)
+    app.jinja_env.auto_reload = True
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
+    app.run(host="0.0.0.0", port=10010,debug=True)
 
 
 def restore_volume():

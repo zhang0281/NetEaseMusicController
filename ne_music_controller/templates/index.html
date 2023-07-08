@@ -3,101 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>网易云音乐切换</title>
+    <title>网易云音乐遥控器</title>
     <link rel="stylesheet" href="/static/bootstrap.min.css">
     <script src="/static/bootstrap.bundle.min.js"></script>
     <style>
+        @font-face {
+            font-family: 'iconfont';
+            src: url('static/iconfont.woff2?t=1688796006522') format('woff2'),
+            url('static/iconfont.woff?t=1688796006522') format('woff'),
+            url('static/iconfont.ttf?t=1688796006522') format('truetype');
+        }
+
+        .iconfont {
+            font-family: "iconfont" !important;
+            font-size: 40px;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
         ::-webkit-scrollbar {
             display: none;
         }
 
         body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 100vw;
             height: 100vh;
         }
 
-        .title {
-            text-align: center;
+        .container {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            justify-content: space-around;
+            align-items: center;
+            align-content: space-around;
+            max-width: 800px;
+            width: 100%;
+            height: 100%;
         }
 
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            text-align: center;
+            width: 100%;
+            max-width: 100%;
+            height: 100%;
+            background-image: linear-gradient(45deg, #7A88FF, #7AFFAF);
+            z-index: -100;
+        }
+
+
+        .thumbnail {
+            flex-grow: 5;
+            min-height: 70vh;
+        }
+
+        .thumbnail-img {
+            width: 60vw;
+            max-width: 650px;
+        }
+
+
         .btn-list {
+            flex-grow: 1;
             display: flex;
-            justify-content: center;
+            justify-content: space-around;
             align-items: center;
             align-content: center;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            width: 100%;
         }
 
         .btn-list > a {
-            min-height: 5em;
-            line-height: 5em;
-            flex: 32%;
+            height: 60px;
             margin: 0.5%;
         }
-        .img-fluid {
-            max-width: 100%;
-            width: 300px;
-            height: auto;
+
+        .title_div {
+            flex-grow: 1;
+        }
+
+        .title {
+            font-size: 2rem;
+        }
+
+        .artist {
+            font-size: 1rem;
+        }
+
+        .vol {
+            flex-grow: 1;
+            display: flex;
+            width: 80%;
+            align-items: center;
+        }
+
+        .vol-label {
+            width: 10%;
+            order: 1;
+        }
+
+        .vol-range {
+            width: 100%;
+            height: 100%;
+            order: 2;
         }
     </style>
-</head>
-<body>
-<div class="container">
     <script>
-        async function sendRequest(url,callback) {
+        async function sendRequest(url, callback) {
             let xhr = new XMLHttpRequest();
             xhr.open('GET', url, true);
             xhr.send();
             xhr.onloadend = callback
         }
+
+        function updateData() {
+            sendRequest('?action=get_info', result => {
+                let data = JSON.parse(result.currentTarget.response)
+                document.getElementById('artist').innerText = data.artist
+                document.getElementById('title').innerText = data.title
+                document.getElementById('thumbnail').src = '?action=get_pic' + '&_=' + Math.random();
+            })
+        }
+
+        function reload() {
+            setTimeout(() => {
+                location.reload()
+            }, 1500)
+        }
+
+        function getVol() {
+            sendRequest('?action=get_vol', result => {
+                document.getElementById('volRange').value = result.currentTarget.response
+            })
+        }
     </script>
-    <div>
-        <div class="title">
-            <h3>买不起遥控器只能写程序</h3>
-        </div>
-        <div id="title"></div>
-        <div id="artist"></div>
-        <script>
-            function updateData(){
-                sendRequest('?action=get_info',result=>{
-                    let data = JSON.parse(result.currentTarget.response.replaceAll("'",'"'))
-                    console.log(data)
-                    document.getElementById('artist').innerText = data.artist
-                    document.getElementById('title').innerText = data.title
-                    document.getElementById('pic').src = document.getElementById('pic').src +'&_='+ Math.random();
-                })
-            }
-            updateData()
-            function reload(){
-                setTimeout(()=>{
-                    location.reload()
-                },1500)
-            }
-        </script>
-        <img id="pic" src="?action=get_pic" alt="" class="img-fluid"/>
-        <div></div>
-        <div class="btn-list">
-
-            <a class="btn btn-lg btn-primary" role="button"
-               href="javascript:sendRequest('?action=prev_song');reload()">前一首</a>
-            <a class="btn btn-lg btn-primary" role="button"
-               href="javascript:sendRequest('?action=pause_play')">暂停/播放</a>
-            <a class="btn btn-lg btn-primary" role="button"
-               href="javascript:sendRequest('?action=next_song');reload()">下一首</a>
-            <label for="customRange" class="form-label">音量</label>
-            <input type="range" class="form-range" id="customRange" min="0" max="1" step="0.001" value="1"
-                   onchange="sendRequest('?action=vol_slider&arg='+document.getElementById('customRange').value)">
-            <script>
-                sendRequest('?action=get_vol',result=>{
-                    document.getElementById('customRange').value = result.currentTarget.response
-                })
-            </script>
-        </div>
+</head>
+<body>
+<div class="container">
+    <div class="title_div">
+        <div id="title" class="title"></div>
+        <div id="artist" class="artist"></div>
     </div>
-</div>
 
+    <div class="vol">
+        <label for="volRange" class="vol-label">
+            <span class="iconfont">&#xeca5;</span>
+        </label>
+        <input type="range" class="vol-range" id="volRange" min="0" max="1" step="0.001" value="1"
+               onchange="sendRequest('?action=vol_slider&arg='+document.getElementById('volRange').value)">
+    </div>
+
+    <div class="thumbnail">
+        <img id="thumbnail" src="" alt="" class="thumbnail-img"/>
+    </div>
+
+    <div class="btn-list">
+        <a class="btn" role="button" href="javascript:sendRequest('?action=prev_song');reload()">
+            <span class="iconfont">&#xe636;</span>
+        </a>
+        <a class="btn" role="button" href="javascript:sendRequest('?action=pause_play')">
+            <span class="iconfont">&#xe7f1;</span>
+        </a>
+        <a class="btn" role="button" href="javascript:sendRequest('?action=next_song');reload()">
+            <span class="iconfont">&#xe637;</span>
+        </a>
+    </div>
+
+</div>
+<script>
+    updateData()
+    getVol()
+</script>
+<div class="background"></div>
 </body>
 </html>
